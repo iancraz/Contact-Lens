@@ -19,16 +19,29 @@ class Logic(QtWidgets.QMainWindow, Ui_MainWindow):
             dist1 = float(self.diam1LineEdit.text())
             dist2 = float(self.diam2LineEdit.text())
             dist3 = float(self.diam3LineEdit.text())
-            rad2 = float(self.rad2LineEdit.text())
             rad3 = float(self.rad3LineEdit.text())
+        except ValueError:
+            return
+        try:
             rad1 = float(self.rad1LineEdit.text())
         except ValueError:
-            print("No Value")
-        
-        if self.calcRad.isChecked():
-            sag1 = float(self.sagInput.text())
-            rad1 = (dist1**2 - 4 * sag1**2)/(8*sag1)
-        self.rad1LineEdit.setText(str(rad1))
+            if self.calcRad.isChecked():
+                try:
+                    sag1 = float(self.sagInput.text())
+                except ValueError:
+                    return
+                rad1 = (dist1**2 + (4 * sag1**2))/(8*sag1)
+                self.rad1LineEdit.setText(str(rad1))
+        try:
+            rad2 = float(self.rad2LineEdit.text())
+        except ValueError:
+            if self.calcRad.isChecked():
+                try:
+                    sag2 = float(self.sag2Input.text())
+                except ValueError:
+                    return
+                rad2 = (dist2**2 + (4 * sag2**2))/(8*sag2)
+                self.rad2LineEdit.setText(str(rad2))
         
         if self.dryBut.isChecked():
             rad1 = rad1 * float(self.radialIndexLineEdit.text())
@@ -45,12 +58,12 @@ class Logic(QtWidgets.QMainWindow, Ui_MainWindow):
             dist2 = dist2 / float(self.linealIndexLineEdit.text())
             dist3 = dist3 / float(self.linealIndexLineEdit.text())
 
-        self.rad1ans.setText(str(rad1))
-        self.rad2ans.setText(str(rad2))
-        self.rad3ans.setText(str(rad3))
-        self.diam1Ans.setText(str(dist1))
-        self.diam2Ans.setText(str(dist2))
-        self.diam3Ans.setText(str(dist3))
+        self.rad1ans.setText(str(round(rad1,2)))
+        self.rad2ans.setText(str(round(rad2,2)))
+        self.rad3ans.setText(str(round(rad3,2)))
+        self.diam1Ans.setText(str(round(dist1,2)))
+        self.diam2Ans.setText(str(round(dist2,2)))
+        self.diam3Ans.setText(str(round(dist3,2)))
 
         #dist1 = sqrt(4*rad1**2 - 4*(rad1-sag1)**2)
         #dist2 = sqrt(4*rad2**2 - 4*(rad2-sag2)**2)
@@ -60,8 +73,8 @@ class Logic(QtWidgets.QMainWindow, Ui_MainWindow):
         x = linspace(-dist3/2,dist3/2,num= number)
     
         h1 = rad1 - 1/2 * sqrt(4 * rad1**2 - dist1**2)
-        #h2 = rad2 - 1/2 * sqrt(4 * rad2**2 - dist2**2)
-        #h3 = rad3 - 1/2 * sqrt(4 * rad3**2 - dist3**2)
+        h2 = rad2 - 1/2 * sqrt(4 * rad2**2 - dist2**2)
+        h3 = rad3 - 1/2 * sqrt(4 * rad3**2 - dist3**2)
         y = []
         for k in x:
             if k < (-dist2/2)  or k > (dist2/2):
@@ -88,11 +101,12 @@ class Logic(QtWidgets.QMainWindow, Ui_MainWindow):
             temp = der-izq
             temp2 = (top-bot)/2
             plt.ylim(bot-temp/2 + temp2,bot+temp/2 + temp2)
-        plt.grid(which='both')
         plt.title("Lente de perfil")
         plt.xlabel("Milimetros")
         plt.ylabel("Milimetros")
-        self.sag1LineEdit.setText(str(h1))
+        plt.grid(which='both')
+        self.sag1LineEdit.setText(str(round(h1,2)))
+        self.sagTotal.setText(str(round(max(y),2)))
         plt.show()
         
         # rad1
