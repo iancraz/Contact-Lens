@@ -16,25 +16,50 @@ class Logic(QtWidgets.QMainWindow, Ui_MainWindow):
     def lensCalculation(self):
         number = 100
         try:
-            sag1 = float(self.sag1LineEdit.text())
-            sag2 = float(self.sag2LineEdit.text())
-            sag3 = float(self.sag3LineEdit.text())
-            rad1 = float(self.rad1LineEdit.text())
+            dist1 = float(self.diam1LineEdit.text())
+            dist2 = float(self.diam2LineEdit.text())
+            dist3 = float(self.diam3LineEdit.text())
             rad2 = float(self.rad2LineEdit.text())
             rad3 = float(self.rad3LineEdit.text())
+            rad1 = float(self.rad1LineEdit.text())
         except ValueError:
-            return
+            print("No Value")
         
+        if self.calcRad.isChecked():
+            sag1 = float(self.sagInput.text())
+            rad1 = (dist1**2 - 4 * sag1**2)/(8*sag1)
+        self.rad1LineEdit.setText(str(rad1))
+        
+        if self.dryBut.isChecked():
+            rad1 = rad1 * float(self.radialIndexLineEdit.text())
+            rad2 = rad2 * float(self.radialIndexLineEdit.text())
+            rad3 = rad3 * float(self.radialIndexLineEdit.text())
+            dist1 = dist1 * float(self.linealIndexLineEdit.text())
+            dist2 = dist2 * float(self.linealIndexLineEdit.text())
+            dist3 = dist3 * float(self.linealIndexLineEdit.text())
+        else:
+            rad1 = rad1 / float(self.radialIndexLineEdit.text())
+            rad2 = rad2 / float(self.radialIndexLineEdit.text())
+            rad3 = rad3 / float(self.radialIndexLineEdit.text())
+            dist1 = dist1 / float(self.linealIndexLineEdit.text())
+            dist2 = dist2 / float(self.linealIndexLineEdit.text())
+            dist3 = dist3 / float(self.linealIndexLineEdit.text())
 
+        self.rad1ans.setText(str(rad1))
+        self.rad2ans.setText(str(rad2))
+        self.rad3ans.setText(str(rad3))
+        self.diam1Ans.setText(str(dist1))
+        self.diam2Ans.setText(str(dist2))
+        self.diam3Ans.setText(str(dist3))
 
-        dist1 = sqrt(4*rad1**2 - 4*(rad1-sag1)**2)
-        dist2 = sqrt(4*rad2**2 - 4*(rad2-sag2)**2)
-        dist3 = sqrt(4*rad3**2 - 4*(rad3-sag3)**2)
+        #dist1 = sqrt(4*rad1**2 - 4*(rad1-sag1)**2)
+        #dist2 = sqrt(4*rad2**2 - 4*(rad2-sag2)**2)
+        #dist3 = sqrt(4*rad3**2 - 4*(rad3-sag3)**2)
 
         
         x = linspace(-dist3/2,dist3/2,num= number)
     
-        #h1 = rad1 - 1/2 * sqrt(4 * rad1**2 - dist1**2)
+        h1 = rad1 - 1/2 * sqrt(4 * rad1**2 - dist1**2)
         #h2 = rad2 - 1/2 * sqrt(4 * rad2**2 - dist2**2)
         #h3 = rad3 - 1/2 * sqrt(4 * rad3**2 - dist3**2)
         y = []
@@ -67,7 +92,9 @@ class Logic(QtWidgets.QMainWindow, Ui_MainWindow):
         plt.title("Lente de perfil")
         plt.xlabel("Milimetros")
         plt.ylabel("Milimetros")
+        self.sag1LineEdit.setText(str(h1))
         plt.show()
+        
         # rad1
         # rad2
         # rad3
