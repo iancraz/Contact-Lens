@@ -49,10 +49,21 @@ class Logic(QtWidgets.QMainWindow, Ui_MainWindow):
             y[k] = y[k]-yt
 
         plt.plot(x,y)
+        bot, top = plt.ylim()
+        izq, der = plt.xlim()
+        if top-bot > der-izq:
+            temp = top-bot
+            plt.xlim(izq,izq+temp)
+        else:
+            temp = der-izq
+            temp2 = (top-bot)/2
+            plt.ylim(bot-temp/2 + temp2,bot+temp/2 + temp2)
         #plt.xlim(-3,3)
         #plt.ylim(0,5)
         plt.grid(which='both')
         plt.title("Lente de perfil")
+        plt.xlabel("Milimetros")
+        plt.ylabel("Milimetros")
         plt.show()
         # rad1
         # rad2
